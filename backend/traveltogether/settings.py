@@ -38,10 +38,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Must be before all other middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # CsrfViewMiddleware removed — API uses CORS for security in dev
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -120,15 +120,38 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS settings - Allow frontend to connect
+# CORS settings — Allow ALL local development origins
+CORS_ALLOW_ALL_ORIGINS = True  # Development only
+
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5500",    # VS Code Live Server
+    "http://127.0.0.1:5500",   # VS Code Live Server (IPv4)
+    "http://localhost:5501",    # Live Server alt port
+    "http://127.0.0.1:5501",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'origin',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Exempt all API views from Django CSRF (handled by CORS instead)
+CORS_URLS_REGEX = r'^/api/.*$'
 
 # OTP Settings
 OTP_EXPIRY_MINUTES = 10  # OTP expires in 10 minutes
