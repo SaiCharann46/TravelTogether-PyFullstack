@@ -1,161 +1,148 @@
-// WeTravel — Signup Logic
-// Wrapped in DOMContentLoaded to guarantee all HTML elements exist before JS runs
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// WeTravel Signup — v5
+// All functions are GLOBAL (window.*) so onclick="..." in HTML always finds them
 
-document.addEventListener('DOMContentLoaded', function () {
+var API = 'http://127.0.0.1:8000/api';
 
-  // ── Mirror email into OTP display field ──
-  const emailInput = document.getElementById('email');
-  const otpEmailDisplay = document.getElementById('otp-email-display');
-  if (emailInput && otpEmailDisplay) {
-    emailInput.addEventListener('input', function () {
-      otpEmailDisplay.value = this.value;
-    });
+// ─────────────────────────────────────────
+// Called by: onclick="generateOTP()"
+// ─────────────────────────────────────────
+async function generateOTP() {
+  var email      = document.getElementById('email').value.trim();
+  var statusBox  = document.getElementById('otp-status-box');
+  var otpField   = document.getElementById('otp-field');
+  var btn        = document.getElementById('generate-otp-btn');
+
+  if (!email) {
+    setAlert('Please type your email address in the Email field first.', 'error');
+    return;
   }
 
-  // ── Generate OTP button ──
-  const otpBtn = document.getElementById('generate-otp-btn');
-  if (otpBtn) {
-    otpBtn.addEventListener('click', async function () {
-      const email = document.getElementById('email').value.trim();
-      const statusBox = document.getElementById('otp-status-box');
-      const otpField = document.getElementById('otp-field');
+  btn.disabled    = true;
+  btn.textContent = '⏳ Sending...';
+  statusBox.style.display = 'none';
 
-      if (!email) {
-        showAlert('Please enter your email address first.', 'error');
-        return;
-      }
+  try {
+    var res  = await fetch(API + '/otp/generate/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    });
+    var data = await res.json();
 
-      otpBtn.disabled = true;
-      otpBtn.innerHTML = '<i class="fas fa-spinner spinner"></i>&nbsp;Sending...';
-      statusBox.style.display = 'none';
+    if (res.ok) {
+      otpField.style.display  = 'block';
+      statusBox.style.display = 'block';
+      statusBox.className     = '';
+      statusBox.innerHTML     =
+        '✅ OTP ready! &nbsp;' +
+        '<strong style="font-size:1.15rem;letter-spacing:3px;color:#fff;background:rgba(255,255,255,0.1);padding:2px 10px;border-radius:6px;">' +
+        data.otp_code +
+        '</strong>' +
+        '&nbsp;&nbsp;← copy this number into the box below';
 
-      try {
-        const res = await fetch(`${API_BASE_URL}/otp/generate/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          // Show OTP on screen (development mode — no real email needed)
-          otpField.style.display = 'block';
-          statusBox.style.display = 'block';
-          statusBox.className = '';
-          statusBox.innerHTML =
-            '✅ OTP generated! &nbsp;<strong style="font-size:1.1rem;letter-spacing:2px;color:#fff;">Your OTP: ' +
-            data.otp_code +
-            '</strong>&nbsp; — copy this into the field below';
-
-          // Countdown to resend
-          let secs = 60;
-          const t = setInterval(() => {
-            secs--;
-            otpBtn.innerHTML = `<i class="fas fa-clock"></i>&nbsp;Resend in ${secs}s`;
-            if (secs <= 0) {
-              clearInterval(t);
-              otpBtn.disabled = false;
-              otpBtn.innerHTML = '<i class="fas fa-redo"></i>&nbsp;Resend OTP';
-            }
-          }, 1000);
-
-        } else {
-          statusBox.style.display = 'block';
-          statusBox.className = 'error';
-          statusBox.textContent = '❌ ' + (data.error || 'Failed to generate OTP');
-          otpBtn.disabled = false;
-          otpBtn.innerHTML = '<i class="fas fa-key"></i>&nbsp;Send OTP';
+      // Countdown timer
+      var secs = 60;
+      var timer = setInterval(function () {
+        secs--;
+        btn.textContent = '⏳ Resend in ' + secs + 's';
+        if (secs <= 0) {
+          clearInterval(timer);
+          btn.disabled    = false;
+          btn.textContent = '🔄 Resend OTP';
         }
+      }, 1000);
 
-      } catch (err) {
-        console.error('OTP error:', err);
-        statusBox.style.display = 'block';
-        statusBox.className = 'error';
-        statusBox.textContent = '❌ Cannot connect to server. Is the backend running? (Terminal → python manage.py runserver)';
-        otpBtn.disabled = false;
-        otpBtn.innerHTML = '<i class="fas fa-key"></i>&nbsp;Send OTP';
-      }
+    } else {
+      statusBox.style.display = 'block';
+      statusBox.className     = 'err';
+      statusBox.textContent   = '❌ ' + (data.error || 'Could not generate OTP');
+      btn.disabled            = false;
+      btn.textContent         = '🔑 Send OTP';
+    }
+
+  } catch (err) {
+    console.error('OTP fetch error:', err);
+    statusBox.style.display = 'block';
+    statusBox.className     = 'err';
+    statusBox.textContent   =
+      '❌ Cannot reach server. Is the backend running? ' +
+      '(In VS Code terminal: python manage.py runserver)';
+    btn.disabled    = false;
+    btn.textContent = '🔑 Send OTP';
+  }
+}
+
+
+// ─────────────────────────────────────────
+// Called by: onclick="doSignup()"
+// ─────────────────────────────────────────
+async function doSignup() {
+  var username       = document.getElementById('username').value.trim();
+  var email          = document.getElementById('email').value.trim();
+  var idProof        = document.getElementById('id-proof').value;
+  var idProofNumber  = document.getElementById('id-proof-number').value.trim();
+  var password       = document.getElementById('password').value.trim();
+  var confirmPw      = document.getElementById('confirm-password').value.trim();
+  var otpCode        = document.getElementById('otp-code').value.trim();
+  var btn            = document.getElementById('signup-btn');
+
+  // Validate
+  if (!username)      { setAlert('❌ Please enter a username.',                     'error'); return; }
+  if (!email)         { setAlert('❌ Please enter your email.',                     'error'); return; }
+  if (!idProof)       { setAlert('❌ Please select your ID proof type.',            'error'); return; }
+  if (!idProofNumber) { setAlert('❌ Please enter your ID proof number.',           'error'); return; }
+  if (!password)      { setAlert('❌ Please enter a password.',                     'error'); return; }
+  if (password.length < 6) { setAlert('❌ Password must be at least 6 characters.','error'); return; }
+  if (password !== confirmPw) { setAlert('❌ Passwords do not match.',              'error'); return; }
+  if (!otpCode)       { setAlert('❌ Please click Send OTP first, then enter the code.', 'error'); return; }
+
+  btn.disabled     = true;
+  btn.textContent  = '⏳ Creating account...';
+
+  try {
+    var res = await fetch(API + '/auth/signup/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username:        username,
+        email:           email,
+        id_proof_type:   idProof,
+        id_proof_number: idProofNumber,
+        password:        password,
+        confirm_password: confirmPw,
+        otp_code:        otpCode
+      })
     });
+    var data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setAlert('✅ Account created! Going to dashboard...', 'success');
+      setTimeout(function () { window.location.href = 'page.html'; }, 1500);
+
+    } else {
+      var msg = data.error || data.detail || JSON.stringify(data);
+      setAlert('❌ ' + msg, 'error');
+      btn.disabled    = false;
+      btn.innerHTML   = 'Create Account &nbsp;<i class="fas fa-arrow-right"></i>';
+    }
+
+  } catch (err) {
+    console.error('Signup error:', err);
+    setAlert('❌ Cannot reach server. Make sure backend is running on port 8000.', 'error');
+    btn.disabled    = false;
+    btn.innerHTML   = 'Create Account &nbsp;<i class="fas fa-arrow-right"></i>';
   }
+}
 
-  // ── Create Account button (type=button, NOT submit) ──
-  const signupBtn = document.getElementById('signup-btn');
-  if (signupBtn) {
-    signupBtn.addEventListener('click', async function () {
 
-      const username        = document.getElementById('username').value.trim();
-      const email           = document.getElementById('email').value.trim();
-      const idProof         = document.getElementById('id-proof').value;
-      const idProofNumber   = document.getElementById('id-proof-number').value.trim();
-      const password        = document.getElementById('password').value.trim();
-      const confirmPassword = document.getElementById('confirm-password').value.trim();
-      const otpCode         = document.getElementById('otp-code').value.trim();
-
-      // ── Validate ──
-      if (!username || !email || !idProof || !idProofNumber || !password || !confirmPassword) {
-        showAlert('Please fill out every field.', 'error'); return;
-      }
-      if (password !== confirmPassword) {
-        showAlert('Passwords do not match.', 'error'); return;
-      }
-      if (password.length < 6) {
-        showAlert('Password must be at least 6 characters.', 'error'); return;
-      }
-      if (!otpCode) {
-        showAlert('Please generate the OTP first, then enter it.', 'error'); return;
-      }
-
-      signupBtn.disabled = true;
-      signupBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> Creating Account...';
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/auth/signup/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username,
-            email,
-            id_proof_type: idProof,
-            id_proof_number: idProofNumber,
-            password,
-            confirm_password: confirmPassword,
-            otp_code: otpCode
-          })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-          showAlert('✅ Account created! Taking you to the dashboard...', 'success');
-          setTimeout(() => { window.location.href = 'page.html'; }, 1500);
-
-        } else {
-          // Show the exact error from the server
-          const errMsg = data.error || data.detail || JSON.stringify(data);
-          showAlert('❌ ' + errMsg, 'error');
-          signupBtn.disabled = false;
-          signupBtn.innerHTML = 'Create Account &nbsp;<i class="fas fa-arrow-right"></i>';
-        }
-
-      } catch (err) {
-        console.error('Signup error:', err);
-        showAlert('❌ Cannot connect to server. Make sure backend is running on port 8000.', 'error');
-        signupBtn.disabled = false;
-        signupBtn.innerHTML = 'Create Account &nbsp;<i class="fas fa-arrow-right"></i>';
-      }
-    });
-  }
-
-  // ── Helper: show alert at the top of the form ──
-  function showAlert(msg, type) {
-    const box = document.getElementById('alert-box');
-    if (!box) return;
-    box.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success') + ' show';
-    box.innerHTML = msg;
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-}); // end DOMContentLoaded
+// ─────────────────────────────────────────
+// Helper: show coloured alert at top
+// ─────────────────────────────────────────
+function setAlert(msg, type) {
+  var box = document.getElementById('alert-box');
+  if (!box) return;
+  box.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success') + ' show';
+  box.innerHTML = msg;
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}

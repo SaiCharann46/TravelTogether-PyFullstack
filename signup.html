@@ -8,36 +8,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     .card-icon {
-      width: 60px; height: 60px; border-radius: 16px; margin: 0 auto 1rem;
-      background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.25));
-      border: 1px solid rgba(99,102,241,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem; color: #a5b4fc;
+      width:60px;height:60px;border-radius:16px;margin:0 auto 1rem;
+      background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(139,92,246,.25));
+      border:1px solid rgba(99,102,241,.3);display:flex;align-items:center;
+      justify-content:center;font-size:1.6rem;color:#a5b4fc;
     }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .otp-row { display: flex; gap: 0.6rem; align-items: flex-start; }
-    .otp-email-group { flex: 1; margin-bottom: 0 !important; }
-    .btn-otp {
-      background: rgba(99,102,241,0.15);
-      border: 1px solid rgba(99,102,241,0.35);
-      color: #a5b4fc; padding: 0.85rem 1rem; border-radius: 12px;
-      cursor: pointer; font-family: 'Poppins', sans-serif;
-      font-weight: 600; font-size: 0.82rem; white-space: nowrap;
-      transition: background 0.2s, transform 0.2s;
-      display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .otp-row{display:flex;gap:.6rem;align-items:flex-start;}
+    .otp-email-group{flex:1;margin-bottom:0!important;}
+    .btn-otp{
+      background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.35);
+      color:#a5b4fc;padding:.85rem 1rem;border-radius:12px;cursor:pointer;
+      font-family:'Poppins',sans-serif;font-weight:600;font-size:.82rem;
+      white-space:nowrap;flex-shrink:0;
     }
-    .btn-otp:hover { background: rgba(99,102,241,0.28); }
-    .btn-otp:disabled { opacity: 0.5; cursor: not-allowed; }
-    #otp-status-box {
-      display: none; margin: 0.6rem 0; padding: 0.8rem 1rem;
-      border-radius: 10px; font-size: 0.85rem; font-weight: 500;
-      background: rgba(6,214,160,0.12); border: 1px solid rgba(6,214,160,0.3);
-      color: #6ee7b7;
+    .btn-otp:disabled{opacity:.5;cursor:not-allowed;}
+    #otp-status-box{
+      display:none;margin:.6rem 0;padding:.8rem 1rem;border-radius:10px;
+      font-size:.85rem;font-weight:500;
+      background:rgba(6,214,160,.12);border:1px solid rgba(6,214,160,.3);color:#6ee7b7;
     }
-    #otp-status-box.error {
-      background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3); color: #fca5a5;
+    #otp-status-box.err{
+      background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#fca5a5;
     }
-    #otp-field { display: none; }
+    #otp-field{display:none;}
   </style>
 </head>
 <body>
@@ -61,32 +55,32 @@
 
   <div class="page-wrapper">
     <div class="form-card">
-      <div style="text-align:center; margin-bottom:1.8rem;">
+      <div style="text-align:center;margin-bottom:1.8rem;">
         <div class="card-icon"><i class="fas fa-user-astronaut"></i></div>
         <h2>Create Account</h2>
         <p class="subtitle">Join thousands of travelers worldwide</p>
       </div>
 
-      <!-- Alert box -->
       <div id="alert-box" class="alert"></div>
 
-      <!-- NOTE: onsubmit="return false" is a safety net so the page never refreshes -->
-      <form id="signup-form" onsubmit="return false;">
+      <!-- onsubmit="return false" stops ANY accidental page refresh -->
+      <form id="signup-form" onsubmit="return false;" action="javascript:void(0);">
 
         <div class="form-group">
           <span class="fi"><i class="fas fa-user"></i></span>
-          <input type="text" id="username" placeholder="Username" required autocomplete="off">
+          <input type="text" id="username" placeholder="Username" autocomplete="off">
         </div>
 
         <div class="form-group">
           <span class="fi"><i class="fas fa-envelope"></i></span>
-          <input type="email" id="email" placeholder="Email address" required autocomplete="off">
+          <input type="email" id="email" placeholder="Email address" autocomplete="off"
+                 oninput="document.getElementById('otp-email-display').value=this.value">
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <span class="fi"><i class="fas fa-id-card"></i></span>
-            <select id="id-proof" required>
+            <select id="id-proof">
               <option value="" disabled selected>ID Type</option>
               <option value="aadhar">Aadhar Card</option>
               <option value="pan">PAN Card</option>
@@ -96,21 +90,20 @@
           </div>
           <div class="form-group">
             <span class="fi"><i class="fas fa-hashtag"></i></span>
-            <input type="text" id="id-proof-number" placeholder="ID Number" required>
+            <input type="text" id="id-proof-number" placeholder="ID Number">
           </div>
         </div>
 
         <div class="form-group">
           <span class="fi"><i class="fas fa-lock"></i></span>
-          <input type="password" id="password" placeholder="Password (min 6 chars)" required>
+          <input type="password" id="password" placeholder="Password (min 6 chars)">
         </div>
 
         <div class="form-group">
           <span class="fi"><i class="fas fa-shield-alt"></i></span>
-          <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+          <input type="password" id="confirm-password" placeholder="Confirm Password">
         </div>
 
-        <!-- OTP Section -->
         <div class="section-divider">Verify Email</div>
 
         <div class="otp-row">
@@ -118,7 +111,8 @@
             <span class="fi"><i class="fas fa-at"></i></span>
             <input type="text" id="otp-email-display" placeholder="Enter email above first" readonly>
           </div>
-          <button type="button" id="generate-otp-btn" class="btn-otp">
+          <!-- onclick directly on button — works even if addEventListener fails -->
+          <button type="button" id="generate-otp-btn" class="btn-otp" onclick="generateOTP()">
             <i class="fas fa-key"></i>&nbsp;Send OTP
           </button>
         </div>
@@ -127,10 +121,11 @@
 
         <div class="form-group" id="otp-field">
           <span class="fi"><i class="fas fa-shield-check"></i></span>
-          <input type="text" id="otp-code" placeholder="Enter the 6-digit OTP shown above" maxlength="6">
+          <input type="text" id="otp-code" placeholder="Paste the OTP shown above" maxlength="6">
         </div>
 
-        <button type="button" id="signup-btn" class="btn-submit">
+        <!-- type="button" means this NEVER submits the form -->
+        <button type="button" id="signup-btn" class="btn-submit" onclick="doSignup()">
           Create Account &nbsp;<i class="fas fa-arrow-right"></i>
         </button>
 
@@ -142,6 +137,7 @@
     </div>
   </div>
 
-  <script src="signup.js"></script>
+  <!-- v5 added to bypass browser cache -->
+  <script src="signup.js?v=5"></script>
 </body>
 </html>
