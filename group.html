@@ -3,52 +3,216 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Application</title>
-  <link rel="stylesheet" href="group.css">
+  <title>WeTravel — Group Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
-    <header>
-        <h1>We Travel</h1>
-        <nav>
-            <ul>
-                <li><a href="page.html">Home</a></li>
-                <li><a href="#">Find Travel Buddy</a></li>
-                <li><a href="#">Profile</a></li><i class="fa-regular fa-circle-user"></i>
-            </ul>
-        </nav>
-    </header>
-    <div class="name">
-        <h1>GROUP NAME :Goa</h1>
-    </div>
-    <div class="disc">
-        <h1>DISCRIPTION: All Are Welcome</h1>
-    </div>
-    <h2>Members:#152535</h2>
-    <div class="MEMBERS">
-        
-        <div class="p1">
-        </div>
-        <div class="p2">
-            
-        </div>
-        <div class="p3">
-           
-        </div>
-        <div class="p4">
-        </div>
-        <div class="p5">
-        </div>
-        <div class="p6">
-        </div>
-    </div>
-    <pre><h3>    owner    p1     p2     p3     p4      p5</h3></pre>
-  <div class="container">
-    <div id="chat-box" class="chat-box"></div>
-    <div class="input-container">
-      <input type="text" id="message-input" placeholder="Type your message...">
-      <button id="send-button">Send</button>
-    </div>
+<body class="chat-body">
+  <div class="bg-orbs" style="opacity:0.4;">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
   </div>
+
+  <!-- Sidebar -->
+  <div class="chat-layout">
+    <aside class="chat-sidebar">
+      <a href="page.html" class="logo" style="margin-bottom:2rem; display:flex;">
+        <i class="fas fa-plane-departure"></i><span>WeTravel</span>
+      </a>
+
+      <div class="group-info-card">
+        <div class="gi-header">
+          <div class="gi-avatar"><i class="fas fa-users"></i></div>
+          <div>
+            <h3 id="group-name-display">Group Name</h3>
+            <small id="group-code-display"></small>
+          </div>
+        </div>
+        <p id="group-desc-display" class="gi-desc"></p>
+        <div class="gi-stat">
+          <i class="fas fa-user-friends"></i>
+          <span id="member-count">-- members</span>
+        </div>
+      </div>
+
+      <div class="sidebar-actions">
+        <a href="create.html" class="sidebar-btn">
+          <i class="fas fa-plus"></i> New Group
+        </a>
+        <a href="join.html" class="sidebar-btn outline">
+          <i class="fas fa-door-open"></i> Join Other
+        </a>
+        <a href="page.html" class="sidebar-btn outline">
+          <i class="fas fa-search"></i> Search Groups
+        </a>
+      </div>
+    </aside>
+
+    <!-- Chat Area -->
+    <main class="chat-main">
+      <div class="chat-topbar">
+        <div class="chat-topbar-info">
+          <div class="topbar-avatar"><i class="fas fa-users"></i></div>
+          <div>
+            <h4 id="topbar-group-name">Group Chat</h4>
+            <small id="topbar-status">● Live</small>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span id="topbar-user" class="topbar-user"></span>
+          <button id="logout-btn" class="btn-logout" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+
+      <div id="chat-box" class="chat-messages">
+        <div class="chat-empty">
+          <i class="fas fa-comments"></i>
+          <p>No messages yet. Say hello! 👋</p>
+        </div>
+      </div>
+
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap">
+          <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+        </div>
+        <button id="send-button" class="btn-send">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    .chat-body { background: #08081a; }
+    .chat-layout { display: flex; height: 100vh; max-width: 100vw; }
+
+    /* Sidebar */
+    .chat-sidebar {
+      width: 280px; flex-shrink: 0; background: rgba(255,255,255,0.03);
+      border-right: 1px solid rgba(255,255,255,0.07);
+      padding: 1.5rem 1.2rem; display: flex; flex-direction: column; gap: 1.2rem;
+      overflow-y: auto;
+    }
+    .group-info-card {
+      background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 16px; padding: 1.1rem;
+    }
+    .gi-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+    .gi-avatar {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      background: rgba(99,102,241,0.2); display: flex; align-items: center;
+      justify-content: center; color: #a5b4fc; font-size: 1.1rem;
+    }
+    .gi-header h3 { font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+    .gi-header small { font-size: 0.75rem; color: #64748b; }
+    .gi-desc { font-size: 0.8rem; color: #64748b; line-height: 1.5; margin-bottom: 0.8rem; }
+    .gi-stat { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #a5b4fc; }
+    .sidebar-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: auto; }
+    .sidebar-btn {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.7rem 1rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;
+      text-decoration: none; transition: background 0.2s; color: white;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    }
+    .sidebar-btn.outline {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8;
+    }
+    .sidebar-btn.outline:hover { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+    .sidebar-btn:not(.outline):hover { opacity: 0.9; }
+
+    /* Chat Main */
+    .chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .chat-topbar {
+      padding: 1rem 1.5rem; background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .chat-topbar-info { display: flex; align-items: center; gap: 0.9rem; }
+    .topbar-avatar {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: rgba(99,102,241,0.2); display: flex; align-items: center;
+      justify-content: center; color: #a5b4fc; font-size: 1rem;
+    }
+    .chat-topbar-info h4 { font-size: 0.95rem; font-weight: 600; color: #fff; }
+    .chat-topbar-info small { font-size: 0.75rem; color: #06d6a0; }
+    .topbar-actions { display: flex; align-items: center; gap: 0.8rem; }
+    .topbar-user { font-size: 0.82rem; color: #64748b; }
+    .btn-logout {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+      color: #fca5a5; width: 36px; height: 36px; border-radius: 10px;
+      cursor: pointer; font-size: 0.85rem; transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.2); }
+
+    /* Messages */
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+    .chat-empty { margin: auto; text-align: center; color: #475569; }
+    .chat-empty i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    .chat-empty p { font-size: 0.9rem; }
+
+    /* Message bubbles */
+    .msg-wrapper { display: flex; align-items: flex-end; gap: 0.6rem; max-width: 75%; }
+    .msg-wrapper.mine { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-avatar {
+      width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(99,102,241,0.2); display: flex; align-items: center;
+      justify-content: center; color: #a5b4fc; font-size: 0.75rem; font-weight: 700;
+    }
+    .msg-avatar.mine-av { background: rgba(6,214,160,0.18); color: #6ee7b7; }
+    .msg-content { display: flex; flex-direction: column; gap: 0.2rem; }
+    .msg-username { font-size: 0.72rem; color: #64748b; font-weight: 500; padding: 0 0.3rem; }
+    .msg-wrapper.mine .msg-username { text-align: right; }
+    .msg-bubble {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px 16px 16px 4px;
+      padding: 0.6rem 1rem; font-size: 0.88rem; color: #e2e8f0;
+      word-break: break-word; line-height: 1.5;
+    }
+    .msg-wrapper.mine .msg-bubble {
+      background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.25);
+      border-radius: 16px 16px 4px 16px;
+    }
+    .msg-time { font-size: 0.68rem; color: #475569; padding: 0 0.3rem; }
+    .msg-wrapper.mine .msg-time { text-align: right; }
+
+    /* Input */
+    .chat-input-bar {
+      padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; gap: 0.7rem; align-items: center; background: rgba(255,255,255,0.02);
+      flex-shrink: 0;
+    }
+    .chat-input-wrap { flex: 1; }
+    .chat-input-wrap input {
+      width: 100%; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+      padding: 0.8rem 1rem; color: #e2e8f0; font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem; outline: none; transition: border-color 0.3s;
+    }
+    .chat-input-wrap input:focus { border-color: #6366f1; background: rgba(99,102,241,0.08); }
+    .chat-input-wrap input::placeholder { color: #475569; }
+    .btn-send {
+      width: 46px; height: 46px; border-radius: 12px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0;
+    }
+    .btn-send:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(99,102,241,0.45); }
+    .btn-send:active { transform: scale(0.96); }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .chat-sidebar { display: none; }
+      .msg-wrapper { max-width: 90%; }
+    }
+  </style>
 
   <script src="group.js"></script>
 </body>

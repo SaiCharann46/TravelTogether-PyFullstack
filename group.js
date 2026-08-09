@@ -1,135 +1,149 @@
-// API Base URL - Django backend
-const API_BASE_URL = 'http://localhost:8000/api';
+// API Base URL — 127.0.0.1 to avoid Mac IPv6 issues
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
-// Load group info and messages when page loads
-window.addEventListener('DOMContentLoaded', async function() {
+const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+const currentGroup = JSON.parse(localStorage.getItem('currentGroup') || '{}');
+
+// ── On page load ──
+window.addEventListener('DOMContentLoaded', function () {
   loadGroupInfo();
   loadMessages();
-  // Refresh messages every 3 seconds
+  // Poll every 3 seconds for new messages
   setInterval(loadMessages, 3000);
+
+  // Show logged in user in topbar
+  const el = document.getElementById('topbar-user');
+  if (el && currentUser.username) el.textContent = '👤 ' + currentUser.username;
+
+  // Send on Enter key
+  document.getElementById("message-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
 });
 
-// Load group information
+// Logout
+document.getElementById("logout-btn")?.addEventListener("click", function () {
+  localStorage.removeItem('user');
+  localStorage.removeItem('currentGroup');
+  window.location.href = 'login.html';
+});
+
+// ── Load Group Info ──
 function loadGroupInfo() {
-  const group = JSON.parse(localStorage.getItem('currentGroup') || '{}');
-  // API returns snake_case keys: group_name, group_description
-  const groupName = group.group_name || group.groupName;
-  const groupDescription = group.group_description || group.groupDescription;
-  if (groupName) {
-    const nameElement = document.querySelector('.name h1');
-    const descElement = document.querySelector('.disc h1');
-    if (nameElement) nameElement.textContent = 'GROUP NAME: ' + groupName;
-    if (descElement) descElement.textContent = 'DESCRIPTION: ' + groupDescription;
-  }
+  const groupName = currentGroup.group_name || currentGroup.groupName || 'Travel Group';
+  const groupDesc = currentGroup.group_description || currentGroup.groupDescription || '';
+  const groupCode = currentGroup.group_code || currentGroup.group_code || '';
+  const memberCount = currentGroup.member_count || '--';
+
+  // Sidebar
+  document.getElementById("group-name-display").textContent = groupName;
+  document.getElementById("group-code-display").textContent = `Code: ${groupCode}`;
+  document.getElementById("group-desc-display").textContent = groupDesc;
+  document.getElementById("member-count").textContent = `${memberCount} member${memberCount !== 1 ? 's' : ''}`;
+
+  // Topbar
+  document.getElementById("topbar-group-name").textContent = groupName;
+  document.title = `WeTravel — ${groupName}`;
 }
 
-// Load messages from backend
+// ── Load Messages ──
+let lastMessageCount = 0;
+
 async function loadMessages() {
-  const group = JSON.parse(localStorage.getItem('currentGroup') || '{}');
-  // Support both API snake_case (group_code) and legacy camelCase (groupCode)
-  const groupId = group.group_code || group.groupCode || group.id;
-  
+  const groupId = currentGroup.group_code || currentGroup.groupCode || currentGroup.id;
   if (!groupId) return;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/chat/messages/${groupId}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
+    const response = await fetch(`${API_BASE_URL}/chat/messages/${groupId}/`);
     const data = await response.json();
 
     if (response.ok && data.messages) {
-      displayMessages(data.messages);
+      if (data.messages.length !== lastMessageCount) {
+        lastMessageCount = data.messages.length;
+        displayMessages(data.messages);
+      }
     }
-  } catch (error) {
-    console.error('Load messages error:', error);
+  } catch (err) {
+    console.error('Load messages error:', err);
   }
 }
 
-// Display messages in chat box
+// ── Display Messages ──
 function displayMessages(messages) {
-  var chatBox = document.getElementById("chat-box");
-  chatBox.innerHTML = ''; // Clear existing messages
+  const chatBox = document.getElementById("chat-box");
 
-  messages.forEach(msg => {
-    var messageElement = document.createElement("div");
-    messageElement.classList.add("message");
-
-    // Use textContent to prevent XSS from user-generated content
-    var strongEl = document.createElement('strong');
-    strongEl.textContent = (msg.username || 'Anonymous') + ': ';
-
-    var textNode = document.createTextNode(msg.message);
-
-    var smallEl = document.createElement('small');
-    smallEl.style.cssText = 'display: block; color: #666; font-size: 0.8em;';
-    smallEl.textContent = new Date(msg.timestamp).toLocaleString();
-
-    messageElement.appendChild(strongEl);
-    messageElement.appendChild(textNode);
-    messageElement.appendChild(smallEl);
-    chatBox.appendChild(messageElement);
-  });
-
-  // Scroll to bottom
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// Send message event listeners
-document.getElementById("send-button").addEventListener("click", sendMessage);
-
-document.getElementById("message-input").addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    sendMessage();
-  }
-});
-
-// Send message to backend
-async function sendMessage() {
-  var messageInput = document.getElementById("message-input");
-  var message = messageInput.value.trim();
-
-  if (message === "") return;
-
-  const group = JSON.parse(localStorage.getItem('currentGroup') || '{}');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  // Support both API snake_case (group_code) and legacy camelCase (groupCode)
-  const groupId = group.group_code || group.groupCode || group.id;
-
-  if (!groupId) {
-    alert("Group information not found. Please join or create a group first.");
+  if (messages.length === 0) {
+    chatBox.innerHTML = `
+      <div class="chat-empty">
+        <i class="fas fa-comments"></i>
+        <p>No messages yet. Say hello! 👋</p>
+      </div>`;
     return;
   }
 
+  const wasAtBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 60;
+
+  chatBox.innerHTML = messages.map(msg => {
+    const isMe = currentUser.username && msg.username === currentUser.username;
+    const initials = (msg.username || 'A')[0].toUpperCase();
+    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return `
+      <div class="msg-wrapper ${isMe ? 'mine' : ''}">
+        <div class="msg-avatar ${isMe ? 'mine-av' : ''}">${initials}</div>
+        <div class="msg-content">
+          <span class="msg-username">${isMe ? 'You' : msg.username}</span>
+          <div class="msg-bubble">${escapeHtml(msg.message)}</div>
+          <span class="msg-time">${time}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  if (wasAtBottom) chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ── Send Message ──
+document.getElementById("send-button").addEventListener("click", sendMessage);
+
+async function sendMessage() {
+  const input = document.getElementById("message-input");
+  const message = input.value.trim();
+  if (!message) return;
+
+  const groupId = currentGroup.group_code || currentGroup.groupCode || currentGroup.id;
+  if (!groupId) {
+    alert("No group selected. Please join or create a group first.");
+    return;
+  }
+
+  input.value = "";
+
   try {
     const response = await fetch(`${API_BASE_URL}/chat/message/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          group_id: groupId,
-          user_id: user.id || null,
-          username: user.username || 'Anonymous',
-          message: message
-        })
-      });
-
-    const data = await response.json();
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        group_id: groupId,
+        user_id: currentUser.id || null,
+        username: currentUser.username || 'Anonymous',
+        message: message
+      })
+    });
 
     if (response.ok) {
-      // Clear input field
-      messageInput.value = "";
-      // Reload messages to show the new one
-      loadMessages();
+      loadMessages(); // Refresh chat
     } else {
-      alert(data.error || "Failed to send message. Please try again.");
+      input.value = message; // Restore on failure
     }
-  } catch (error) {
-    console.error('Send message error:', error);
-    alert("Network error. Please make sure the backend server is running.");
+  } catch (err) {
+    console.error('Send error:', err);
+    input.value = message;
   }
+}
+
+// ── Escape HTML (XSS prevention) ──
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
 }

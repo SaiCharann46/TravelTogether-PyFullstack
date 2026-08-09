@@ -3,31 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Join Group - WeTravel</title>
-  <link rel="stylesheet" href="join.css">
+  <title>WeTravel — Join Group</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>We Travel</h1>
-        <nav>
-            <ul>
-                <li><a href="page.html">Home</a></li>
-                <li><a href="#">Find Travel Buddy</a></li>
-                <li><a href="#">Profile</a></li><i class="fa-regular fa-circle-user"></i>
-            </ul>
-        </nav>
-    </header>
-  <div class="container">
-    <h1>Join Group</h1>
-    <form id="join-group-form">
-      <label for="group-name">Group Name:</label>
-      <input type="text" id="group-name" name="group-name" required>
-      <label for="group-code">Group Code:</label>
-      <input type="text" id="group-code" name="group-code" required>
-      <button type="submit">Join Group</button>
-    </form>
-    <div id="join-status"></div>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
   </div>
+  <header class="glass-nav">
+    <div class="nav-container">
+      <a href="page.html" class="logo"><i class="fas fa-plane-departure"></i><span>WeTravel</span></a>
+      <nav>
+        <a href="page.html" class="nav-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        <a href="create.html" class="btn-primary">Create Group</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+    <div class="form-card">
+      <div style="text-align:center; margin-bottom:1.8rem;">
+        <div class="card-icon"><i class="fas fa-door-open"></i></div>
+        <h2>Join a Group</h2>
+        <p class="subtitle">Enter the group name and secret code to join</p>
+      </div>
+
+      <div id="alert-box" class="alert"></div>
+
+      <form id="join-group-form">
+        <div class="form-group">
+          <span class="fi"><i class="fas fa-users"></i></span>
+          <input type="text" id="group-name" placeholder="Group Name (exact)" required>
+        </div>
+        <div class="form-group">
+          <span class="fi"><i class="fas fa-key"></i></span>
+          <input type="text" id="group-code" placeholder="6-digit Group Code" maxlength="6" required>
+        </div>
+        <button type="submit" id="join-btn" class="btn-submit">
+          <i class="fas fa-door-open"></i> Join Group
+        </button>
+      </form>
+      <div class="form-footer">
+        Don't have a code? <a href="create.html">Create your own group</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .card-icon {
+      width: 60px; height: 60px; border-radius: 16px; margin: 0 auto 1rem;
+      background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(99,102,241,0.25));
+      border: 1px solid rgba(139,92,246,0.3); display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: #c4b5fd;
+    }
+  </style>
 
   <script src="join.js"></script>
 </body>

@@ -1,48 +1,58 @@
-// API Base URL - Django backend
-const API_BASE_URL = 'http://localhost:8000/api';
+// API Base URL — 127.0.0.1 to avoid Mac IPv6 issues
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
-document.getElementById("group-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
-  
-    var groupName = document.getElementById("groupName").value.trim();
-    var groupDescription = document.getElementById("groupDescription").value.trim();
-  
-    // Validate group name and description
-    if (groupName === "" || groupDescription === "") {
-      alert("Please fill out all fields.");
-      return;
+document.getElementById("group-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const groupName = document.getElementById("groupName").value.trim();
+  const groupDescription = document.getElementById("groupDescription").value.trim();
+
+  if (!groupName || !groupDescription) {
+    showAlert("Please fill in both the group name and description.", "error");
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userId = user.id || null;
+
+  if (!userId) {
+    showAlert("You must be logged in to create a group. Redirecting...", "error");
+    setTimeout(() => { window.location.href = "login.html"; }, 1500);
+    return;
+  }
+
+  const btn = document.getElementById("create-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Creating...';
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/groups/create/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ group_name: groupName, group_description: groupDescription, user_id: userId })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem('currentGroup', JSON.stringify(data.group));
+      showAlert(`Group created! Code: ${data.group.group_code} — Redirecting to chat...`, "success");
+      setTimeout(() => { window.location.href = "group.html"; }, 1500);
+    } else {
+      showAlert(data.error || "Failed to create group.", "error");
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-plus-circle"></i> Create Group';
     }
+  } catch (err) {
+    console.error("Create group error:", err);
+    showAlert("Cannot connect to server. Is the backend running on port 8000?", "error");
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-plus-circle"></i> Create Group';
+  }
+});
 
-    // Get user from localStorage
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const userId = user.id || null;
-
-    try {
-      // Send create group request to Django backend
-      const response = await fetch(`${API_BASE_URL}/groups/create/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          group_name: groupName,
-          group_description: groupDescription,
-          user_id: userId
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store group info in localStorage for the group page
-        localStorage.setItem('currentGroup', JSON.stringify(data.group));
-        alert("Group created successfully! Group Code: " + data.group.group_code);
-        window.location.href = "group.html";
-      } else {
-        alert(data.error || "Failed to create group. Please try again.");
-      }
-    } catch (error) {
-      console.error('Create group error:', error);
-      alert("Network error. Please make sure the backend server is running.");
-    }
-  });
+function showAlert(msg, type) {
+  const box = document.getElementById("alert-box");
+  box.className = `alert alert-${type === "error" ? "error" : "success"} show`;
+  box.innerHTML = `<i class="fas fa-${type === "error" ? "exclamation-circle" : "check-circle"}"></i> ${msg}`;
+}

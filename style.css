@@ -1,109 +1,135 @@
+/* =============================================
+   WETRAVEL — Shared Design System
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: black;
-    
+  font-family: 'Poppins', sans-serif;
+  background: #08081a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-header{
-    color:white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height:  60px;
+/* ── Background orbs ── */
+.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.25; animation: orbFloat 10s ease-in-out infinite; }
+.orb-1 { width: 500px; height: 500px; background: #6366f1; top: -150px; left: -150px; animation-delay: 0s; }
+.orb-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-delay: 4s; }
+.orb-3 { width: 300px; height: 300px; background: #06d6a0; top: 50%; left: 55%; transform: translate(-50%, -50%); animation-delay: 8s; }
+@keyframes orbFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-40px) scale(1.05); } }
+
+/* ── Navigation ── */
+.glass-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  padding: 1rem 2rem;
+  background: rgba(8, 8, 26, 0.75);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.nav-container { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.logo { display: flex; align-items: center; gap: 0.6rem; font-size: 1.35rem; font-weight: 700; color: #fff; text-decoration: none; }
+.logo i { color: #6366f1; font-size: 1.4rem; }
+nav { display: flex; align-items: center; gap: 1.5rem; }
+.nav-link { color: #94a3b8; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.3s; }
+.nav-link:hover { color: #fff; }
+
+/* ── Buttons ── */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white; padding: 0.6rem 1.4rem; border-radius: 50px;
+  text-decoration: none; font-weight: 600; font-size: 0.88rem;
+  border: none; cursor: pointer; font-family: 'Poppins', sans-serif;
+  transition: transform 0.2s, box-shadow 0.2s; display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.45); }
+
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white; border: none; padding: 0.9rem;
+  border-radius: 12px; font-family: 'Poppins', sans-serif;
+  font-weight: 600; font-size: 0.95rem; cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(99,102,241,0.45); }
+.btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── Form Card ── */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 7rem 1.5rem 3rem;
+}
+.form-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 24px; padding: 2.5rem;
+  width: 100%; max-width: 460px;
+  animation: fadeUp 0.5s ease both;
+}
+.form-card h2 { font-size: 1.85rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem; }
+.form-card .subtitle { color: #64748b; font-size: 0.88rem; margin-bottom: 2rem; }
+
+/* ── Form Groups ── */
+.form-group { position: relative; margin-bottom: 1rem; }
+.form-group .fi {
+  position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+  color: #64748b; font-size: 0.875rem; pointer-events: none;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  color: #e2e8f0; font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+  outline: none; transition: border-color 0.3s, background 0.3s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.09);
+}
+.form-group input::placeholder { color: #475569; }
+.form-group select option { background: #1a1a35; color: #e2e8f0; }
+.form-group textarea { resize: vertical; padding-top: 0.85rem; min-height: 100px; }
+
+/* ── Alerts ── */
+.alert { padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+.alert.show { display: block; animation: fadeUp 0.3s ease; }
+.alert-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.28); color: #fca5a5; }
+.alert-success { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.28); color: #6ee7b7; }
+.alert-info { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.28); color: #a5b4fc; }
+
+/* ── Form Footer ── */
+.form-footer { text-align: center; margin-top: 1.5rem; color: #64748b; font-size: 0.85rem; }
+.form-footer a { color: #a5b4fc; text-decoration: none; font-weight: 500; }
+.form-footer a:hover { color: #6366f1; }
+
+/* ── Divider ── */
+.section-divider {
+  display: flex; align-items: center; gap: 1rem; margin: 1.2rem 0;
+  color: #475569; font-size: 0.8rem;
+}
+.section-divider::before, .section-divider::after {
+  content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07);
 }
 
-nav ul li {
-    display: inline;
-    margin-right: 50px;
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #06d6a0);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-}
-.class{
-    background-color: red;
-}
-
-
-#search-form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.main{
-    height: 500px;
-    width: 1100px;
-    margin-left: 200px;
-    border-radius: 5%;
-    text-align: center;
-    background-image: url(https://www.travelmagica.com/wp-content/uploads/2018/09/group-travel-tips.jpg);
-    background-size:cover;
-    
-        
-        
-}
-main h1{
-    padding-top: 200px;
-}
-
-#search-form{
-    height: 50px;
-    border-radius: 5%;
-}
-form input{
-    width: 400px;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-}
-
- button{
-    width: 100px;
-    height: 50px;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    
-}
-p{
-    color: white;
-}
-h1{
-    color: white;
-}
-
-form button:hover{
-    background-color: red;
-}
-form input:hover{
-    border-color: red;
-}
-
-.map{
-    height: 635px;
-    background-image: url(https://media.istockphoto.com/id/1307181663/vector/world-map-hand-drawn-simple-stylized-continents-silhouette-in-minimal-line-outline-thin.jpg?s=612x612&w=0&k=20&c=DcEHt_o5KPAxsI1DSJPVimVoaW9MoDC1Ewgb93dM-2s=);
-    background-size: cover;
-    
-}
-h2{
-    padding-top: 400px;
-    padding-left: 500px;
-}
-a{
-    text-decoration: none;
-    
-}
-h2 a:hover{
-    text-decoration: underline;
-    /* color: blue; */
-    text-decoration-color: blue;
-}
+/* ── Animations ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { animation: spin 0.8s linear infinite; display: inline-block; }
