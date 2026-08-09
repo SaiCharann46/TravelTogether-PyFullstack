@@ -1,0 +1,116 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url(https://img.freepik.com/premium-photo/back-view-group-friends-standing-together-looking-sunset-ai-generated_877188-891.jpg);
+    background-size: cover;
+    
+}
+
+header {
+    background-color: black;
+    color: white;
+    height: 50px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* body{
+    background-image:url(https://www.fluentu.com/blog/travel/wp-content/uploads/sites/37/2018/07/travel-around-the-world-cost-e1535307163370.jpg);
+    background-size: cover;
+} */
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+    
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#search {
+    width: 600px;
+    /* height: 30px; */
+    display: flex;
+    justify-content: center;
+    padding-left: 500px;
+    border-radius: 20px;
+}
+
+.create {
+    display: flex;
+    
+    /* justify-content: center; */
+}
+
+form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    border: 3px solid black;
+}
+
+form button {
+    padding: 8px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 450px;
+    /* display: flex;
+    justify-content: center; */
+}
+
+footer {
+    background-color: black;
+    color: #fff;
+    height: 70px;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+form button:hover {
+    border: 3px solid #F72798 ;
+    background-color: #0C359E;
+}
+
+form button {
+    /* border: 3px solid #59D5E0; */
+    border-top: 2px solid red;
+    animation: ani 0.5s linear 1s 2 normal;
+    
+}
+
+#results{
+    color: white;
+
+}

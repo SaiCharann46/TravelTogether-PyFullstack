@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    
+}
+
+header{
+    color:white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height:  60px;
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 50px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+.class{
+    background-color: red;
+}
+
+
+#search-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.main{
+    height: 500px;
+    width: 1100px;
+    margin-left: 200px;
+    border-radius: 5%;
+    text-align: center;
+    background-image: url(https://www.travelmagica.com/wp-content/uploads/2018/09/group-travel-tips.jpg);
+    background-size:cover;
+    
+        
+        
+}
+main h1{
+    padding-top: 200px;
+}
+
+#search-form{
+    height: 50px;
+    border-radius: 5%;
+}
+form input{
+    width: 400px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+ button{
+    width: 100px;
+    height: 50px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    
+}
+p{
+    color: white;
+}
+h1{
+    color: white;
+}
+
+form button:hover{
+    background-color: red;
+}
+form input:hover{
+    border-color: red;
+}
+
+.map{
+    height: 635px;
+    background-image: url(https://media.istockphoto.com/id/1307181663/vector/world-map-hand-drawn-simple-stylized-continents-silhouette-in-minimal-line-outline-thin.jpg?s=612x612&w=0&k=20&c=DcEHt_o5KPAxsI1DSJPVimVoaW9MoDC1Ewgb93dM-2s=);
+    background-size: cover;
+    
+}
+h2{
+    padding-top: 400px;
+    padding-left: 500px;
+}
+a{
+    text-decoration: none;
+    
+}
+h2 a:hover{
+    text-decoration: underline;
+    /* color: blue; */
+    text-decoration-color: blue;
+}

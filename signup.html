@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeTravel - Sign Up</title>
+  <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <header>
+        <h1>We Travel</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Start a Trip</a></li>
+                <li><a href="#">Login</a></li>
+                <li><a href="#" style="background-color: red;">Join WeTravel</a>
+            </ul>
+        </nav>
+      </header>
+  <div class="signup-container">
+    <h2>Sign Up to WeTravel</h2>
+    <form id="signup-form">
+      <!-- <label>Username</label> -->
+      <input type="text" id="username" placeholder="Username" required>
+      <!-- <label>Email</label> -->
+      <input type="email" id="email" placeholder="Email" required>
+      <select id="id-proof" required>
+        <option value="" disabled selected>Select ID Proof</option>
+        <option value="aadhar">Aadhar Card</option>
+        <option value="pan">PAN Card</option>
+        <option value="voter">Voter ID Card</option>
+      </select>
+      <input type="text" id="id-proof-number" placeholder="ID Proof Number" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+      
+      <!-- OTP Section -->
+      <div style="margin: 15px 0;">
+        <button type="button" id="generate-otp-btn" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Generate OTP
+        </button>
+        <p id="otp-status" style="margin: 10px 0; color: #666; font-size: 0.9em;"></p>
+      </div>
+      <input type="text" id="otp-code" placeholder="Enter OTP (6 digits)" maxlength="6" style="display: none;">
+      
+      <button type="submit" id="signup-btn">Sign Up</button>
+    </form>
+    <p class="para-2">Already have an account? <a href="login.html">Login Here</a></p>
+  </div>
+
+  <script src="signup.js"></script>
+</body>
+</html>
+

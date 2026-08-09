@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    background-image: url(https://media.istockphoto.com/id/1307181663/vector/world-map-hand-drawn-simple-stylized-continents-silhouette-in-minimal-line-outline-thin.jpg?s=612x612&w=0&k=20&c=DcEHt_o5KPAxsI1DSJPVimVoaW9MoDC1Ewgb93dM-2s=);
+    background-size:cover;
+}
+
+header{
+    color:white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height:  60px;
+    background-color: black;
+    height: 80px;
+    
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 50px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+  
+  .login-container {
+    width: 400px;
+    height: 350px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* border: 5px solid yellow; */
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  button {
+    display: block;
+    width: 370px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 8px;
+  }
+  
+  button {
+    background-color: #007bff;
+    width: 399px;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .error-message {
+    color: #ff0000;
+    text-align: center;
+  }
+  
