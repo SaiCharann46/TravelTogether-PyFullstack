@@ -1,65 +1,46 @@
-# ===========================
-# TravelTogether - .gitignore
-# ===========================
-
-# Python / Django
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
+*.pyo
+*.pyd
 .Python
-env/
-venv/
-ENV/
-build/
-dist/
-*.egg-info/
 *.egg
-.eggs/
-lib/
-lib64/
+*.egg-info/
+dist/
+build/
 
-# Django specific
+# Virtual environment — never push this
+venv/
+env/
+.venv/
+
+# Django
+*.sqlite3
 *.log
 local_settings.py
 db.sqlite3
-db.sqlite3-journal
-/media
-/staticfiles
-backend/db.sqlite3
+media/
 
-# Environment variables
+# Environment variables — keep secrets out of GitHub
 .env
-.env.*
-!.env.example
+*.env
 
-# Virtual environments
-venv/
-.venv/
-env/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
+# macOS junk
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 
-# Node (if ever added)
+# VS Code
+.vscode/
+*.code-workspace
+
+# Node
 node_modules/
 npm-debug.log
 
-# Temporary files
-*.tmp
-*.bak
-
-# Migrations (optional: comment out if you want to track them)
-# backend/api/migrations/
-
-# Pycache
-backend/**/__pycache__/
-backend/**/*.pyc
+# IDE
+.idea/
+*.swp
+*.swo
